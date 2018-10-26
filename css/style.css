@@ -1,0 +1,22 @@
+.node {
+    cursor: default;
+}
+
+.link {
+    fill: none;
+    stroke: #424242;
+    stroke-width: 1.5px;
+}
+
+.d3-org-chart {
+    cursor: move;
+    width: 100%;
+}
+
+.path-variables {
+    color: rgba(192, 0, 15, 1);
+}
+
+.org-chart-label-text {
+    font-weight: bold;
+}
