@@ -1,7 +1,28 @@
 var orgChart = (function () {
-    var scriptVersion = "1.0.2";
+    var scriptVersion = "1.0.3";
     var util = {
-        version: "1.0.1",
+        version: "1.0.5",
+        isAPEX: function () {
+            if (typeof (apex) !== 'undefined') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        debug: {
+            info: function (str) {
+                if (util.isAPEX()) {
+                    apex.debug.info(str);
+                }
+            },
+            error: function (str) {
+                if (util.isAPEX()) {
+                    apex.debug.error(str);
+                } else {
+                    console.error(str);
+                }
+            }
+        },
         cutString: function (text, textLength) {
             try {
                 if (textLength < 0) return text;
@@ -52,9 +73,9 @@ var orgChart = (function () {
                     /*do nothing */
                 }
             }
-            try {
+            if (util.isAPEX()) {
                 return apex.util.escapeHTML(String(str));
-            } catch (e) {
+            } else {
                 str = String(str);
                 return str
                     .replace(/&/g, "&amp;")
@@ -67,27 +88,23 @@ var orgChart = (function () {
         },
         loader: {
             start: function (id) {
-
-                try {
+                if (util.isAPEX()) {
                     apex.util.showSpinner($(id));
-                } catch (e) {
+                } else {
                     /* define loader */
                     var faLoader = $("<span></span>");
                     faLoader.attr("id", "loader" + id);
-                    faLoader.addClass("ct-loader fa-stack fa-3x");
-
-                    /* define circle for loader */
-                    var faCircle = $("<i></i>");
-                    faCircle.addClass("fa fa-circle fa-stack-2x");
-                    faCircle.css("color", "rgba(121,121,121,0.6)");
+                    faLoader.addClass("ct-loader");
 
                     /* define refresh icon with animation */
                     var faRefresh = $("<i></i>");
-                    faRefresh.addClass("fa fa-refresh fa-spin fa-inverse fa-stack-1x");
-                    faRefresh.css("animation-duration", "1.8s");
+                    faRefresh.addClass("fa fa-refresh fa-2x fa-anim-spin");
+                    faRefresh.css("background", "rgba(121,121,121,0.6)");
+                    faRefresh.css("border-radius", "100%");
+                    faRefresh.css("padding", "15px");
+                    faRefresh.css("color", "white");
 
                     /* append loader */
-                    faLoader.append(faCircle);
                     faLoader.append(faRefresh);
                     $(id).append(faLoader);
                 }
@@ -155,7 +172,7 @@ var orgChart = (function () {
                 try {
                     targetConfig = JSON.parse(targetConfig);
                 } catch (e) {
-                    console.error("Error while try to parse udConfigJSON. Please check your Config JSON. Standard Config will be used.");
+                    console.error("Error while try to parse targetConfig. Please check your Config JSON. Standard Config will be used.");
                     console.error(e);
                     console.error(targetConfig);
                 }
@@ -166,7 +183,7 @@ var orgChart = (function () {
             try {
                 finalConfig = $.extend(true, srcConfig, targetConfig);
             } catch (e) {
-                console.error('Error while try to merge udConfigJSON into Standard JSON if any attribute is missing. Please check your Config JSON. Standard Config will be used.');
+                console.error('Error while try to merge 2 JSONs into standard JSON if any attribute is missing. Please check your Config JSON. Standard Config will be used.');
                 console.error(e);
                 finalConfig = srcConfig;
                 console.error(finalConfig);
